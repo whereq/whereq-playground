@@ -1,0 +1,30 @@
+
+spring:
+    application:
+        name: whereq-playground
+    
+    datasource:
+        hikari:
+            connection-init-sql: SELECT 1 FROM DUAL
+            connection-timeout: 2000
+            idleTimeout: 600000
+            initialization-fail-timeout: 1000
+            max-lifetime: 1200000
+            maximum-pool-size: 15
+            minimum-idle: 5
+            pool-name: hikari-cp-bundle-pool
+            validation-timeout: 2000
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: org.postgresql.Driver
+        url: ${DB_URL}
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+    jpa:
+        properties:
+            "[hibernate.show_sql]": true
+            "[hibernate.format_sql]": true
+            "[hibernate.enable_lazy_load_no_trans]": true
+        
+server:
+    error:
+        include-message: always
