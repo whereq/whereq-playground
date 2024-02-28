@@ -1,0 +1,9 @@
+sed -i -e "s|^spark.submit.deployMode.* .*$|spark.submit.deployMode SPARK_SUBMIT_DEPLOY_MODE|" test.sample
+
+# origin content
+#spark.submit.deployMode 
+#spark.submit.deployMode.post PLACE_HOLDER
+
+# after sed
+spark.submit.deployMode SPARK_SUBMIT_DEPLOY_MODE
+spark.submit.deployMode SPARK_SUBMIT_DEPLOY_MODE
