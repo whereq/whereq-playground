@@ -12,3 +12,15 @@ sudo service nginx start
 sudo service nginx stop
 sudo service nginx restart
 ```
+
+To view status of your Nginx server
+
+```
+sudo systemctl status nginx
+```
+
+** OR **
+
+```
+sudo service status nginx
+```
