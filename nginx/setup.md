@@ -24,3 +24,7 @@ sudo systemctl status nginx
 ```
 sudo service status nginx
 ```
+
+
+# Reference
+[https://www.cyberciti.biz/faq/nginx-restart-ubuntu-linux-command/](https://www.cyberciti.biz/faq/nginx-restart-ubuntu-linux-command/)
