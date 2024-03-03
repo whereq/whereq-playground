@@ -25,6 +25,11 @@ sudo systemctl status nginx
 sudo service status nginx
 ```
 
+# Virtual Hosts Configuration
+
+1. Add virtual host configuration under /etc/nginx/sites-available/
+2. Create symbol link under /etc/nginx/sites-enabled
+
 
 # Reference
 [https://www.cyberciti.biz/faq/nginx-restart-ubuntu-linux-command/](https://www.cyberciti.biz/faq/nginx-restart-ubuntu-linux-command/)
