@@ -1,7 +1,8 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import SigninWithKeycloak from "@/app/components/signin-with-keycloak";
 import { getServerSession } from "next-auth";
 import { redirect, useParams } from "next/navigation";
+
+import { authOptions } from "@/lib/auth/auth-options";
+import SigninWithKeycloak from "@/app/components/signin-with-keycloak";
 
 const signinErrors: Record<string | "default", string> = {
   default: "Unable to sign in.",
@@ -31,9 +32,7 @@ export default async function Signin({ searchParams: { callbackUrl, error } }: S
   }
   return (
     <div className='flex flex-col space-y-3 justify-center items-center h-screen'>
-      {error && <div>
-        {signinErrors[error.toLowerCase()]}
-      </div>}
+      {error && <div> {signinErrors[error.toLowerCase()]} </div>}
       <SigninWithKeycloak />
     </div>
   )

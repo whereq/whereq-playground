@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/auth/auth-options";
 import SignoutOfKeycloak from '@/app/components/signout-of-keycloak';
 import SigininWithKeycloak from '@/app/components/signin-with-keycloak';
 

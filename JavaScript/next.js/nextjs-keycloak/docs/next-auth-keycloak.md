@@ -70,10 +70,10 @@ openssl rand -base64 32
 ### 3. Configure the  `authOptions`  with  `KeycloakProvider`  for  `next-auth`  and initialize route handler.
 
 The code below will configure Keycloak provider from the environment variables.
+
 ```typescript
-// src/app/api/auth/[...nextauth]/route.ts
+// src/lib/auth/auth-options.ts
 import { AuthOptions } from "next-auth";
-import NextAuth from "next-auth";
 import KeycloakProvider from "next-auth/providers/Keycloak"
 export const authOptions: AuthOptions = {
   providers: [
@@ -84,6 +84,13 @@ export const authOptions: AuthOptions = {
     })
   ]
 }
+```
+
+```typescript
+// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
+import { authOptions } from "@/lib/auth/auth-options";
+
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }
 ```
@@ -117,7 +124,7 @@ Modify  `src/app/page.tsx`  with the following code.
 ```typescript
 // src/app/page.tsx  
 import { getServerSession } from 'next-auth'  
-import { authOptions } from './api/auth/[...nextauth]/route'  
+import { authOptions } from '@/lib/auth/auth-options'  
 import SigninWithKeycloak from './components/signin-with-keycloak'  
 import SignoutOfKeycloak from './components/signout-of-keycloak'  
 export default async function Home() {  
@@ -216,7 +223,7 @@ We will utilize [callbacks](https://next-auth.js.org/configuration/callbacks), w
 To achieve this, we'll include `jwt` and `session` callbacks in the `authOptions`. These callbacks will assist us in storing tokens and session metadata.
 
 ```typescript
-// src/app/api/auth/[...nextauth]/route.ts
+// src/lib/auth/auth-options.ts
 export const authOptions: AuthOptions = {
   ...
   ...
@@ -257,7 +264,7 @@ We also need to set up the JWT callback to handle scenarios where the `accessTok
 It's important to note that even the `refreshToken` can expire. In such cases, we would need to prompt the user to reauthenticate with the `Keycloak` authorization server.
 
 ```typescript
-// src/app/api/auth/[...nextauth]/route.ts
+// src/lib/auth/auth-options.ts
 // Keycloak API call that renews the accessToken
 function requestRefreshOfAccessToken(token: JWT) {
   return fetch(`${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/token`, {
@@ -510,7 +517,7 @@ export const config = {
 ```typescript
 // src/app/public/page.tsx
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth/auth-options';
 import SignoutOfKeycloak from '@/app/components/signout-of-keycloak';
 import SigninWithKeycloak from '@/app/components/signin-with-keycloak';
 
@@ -540,8 +547,8 @@ export default async function Public() {
 ```typescript
 // src/app/private/page.tsx
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/auth-options';
 import SignoutOfKeycloak from '@/app/components/signout-of-keycloak';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export default async function Private() {
   const session = await getServerSession(authOptions)
@@ -560,7 +567,7 @@ export default async function Private() {
 - Custom Sign in and Sign out components
 ```typescript
 // src/app/auth/signin/page.tsx
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from '@/lib/auth/auth-options';
 import SignInWithKeycloak from "@/app/components/signin-with-keycloak";
 import { getServerSession } from "next-auth";
 import { redirect, useParams } from "next/navigation";
@@ -595,7 +602,7 @@ export default async function Signin({ searchParams: { callbackUrl, error } }: S
 
 ```typescript
 // src/app/auth/signout/page.tsx
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from '@/lib/auth/auth-options';
 import SignOutOfKeycloak from "@/app/components/signout-of-keycloak";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -618,11 +625,8 @@ export default async function SignoutPage() {
 ```
 - Finally, configure `next-auth` to use custom `signin` and `signout` routes. This can be done by configuring the right `authOptions` 
 ```typescript
-// src/app/api/auth/[...nextauth]/route.ts
+// src/lib/auth/auth-options.ts
 import { AuthOptions, TokenSet } from "next-auth";
-import NextAuth from "next-auth/next";
-import KeycloakProvider from "next-auth/providers/keycloak"
-
 export const authOptions: AuthOptions = {
 // ...
   pages: {
@@ -631,6 +635,13 @@ export const authOptions: AuthOptions = {
   },
 // ...
 }
+```
+```typescript
+// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth/next";
+import KeycloakProvider from "next-auth/providers/keycloak"
+
+import { authOptions } from "@/lib/auth/auth-options";
 
 const handler = NextAuth(authOptions);
 
@@ -776,6 +787,8 @@ module.exports = {
 [Next.js - Routing - Catch call segment](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments)
 
 [NextAuth Environment Variables](https://next-auth.js.org/configuration/options#environment-variables)
+
+[NextAuth - Keycloak provider - Source code](https://github.com/nextauthjs/next-auth/blob/v4/packages/next-auth/src/providers/keycloak.ts)
 
 [Federated Sign-out](https://identityserver4.readthedocs.io/en/latest/topics/signout_federated.html#:~:text=Federated%20sign%2Dout%20is%20the,a%20workflow%20unknown%20to%20IdentityServer.)
 
