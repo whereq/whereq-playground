@@ -118,34 +118,38 @@ Modify  `src/app/page.tsx`  with the following code.
 // src/app/page.tsx  
 import { getServerSession } from 'next-auth'  
 import { authOptions } from './api/auth/[...nextauth]/route'  
-import Sign from './components/signin'  
-import Signout from './components/signout'  
+import SigninWithKeycloak from './components/signin-with-keycloak'  
+import SignoutOfKeycloak from './components/signout-of-keycloak'  
 export default async function Home() {  
   const session = await getServerSession(authOptions)  
   if (session) {  
     return <div>  
       <div>Your name is {session.user?.name}</div>  
-      <div><Signout /> </div>  
+      <div><SignoutOfKeycloak /> </div>  
     </div>  
   }  
   return (  
     <div>  
-      <Signin />  
+      <SigninWithKeycloak />  
     </div>  
   )  
 }
 ```
 
-Also create the  `Signin`  and  `Signout`  component by creating the following files.
+Also create the  `SigninWithKeycloak`  and  `SignoutOfKeycloak`  component by creating the following files.
 
-mkdir src/app/components &&  touch src/app/components/signin.tsx && touch src/components/signout.tsx
+```bash
+mkdir src/app/components 
+touch src/app/components/signin-with-keycloak.tsx 
+touch src/app/components/signout-of-keycloak.tsx
+```
 
-Add the following contents to `Signin` and `Signout` component.
+Add the following contents to `SigninWithKeycloak` and `SignoutOfKeycloak` component.
 ```typescript
-// src/components/signout.tsx  
+// src/app/components/signin-with-keycloak.tsx  
 "use client"  
 import { signIn } from "next-auth/react";  
-export default function Signin() {  
+export default function SigninWithKeycloak() {  
   return <button onClick={() => signIn("keycloak")}>  
     Signin with keycloak  
   </button>  
@@ -153,10 +157,10 @@ export default function Signin() {
 ```
 
 ```typescript
-// src/components/Signout.tsx  
+// src/app/components/signout-of-keycloak.tsx  
 "use client"  
 import { signOut } from "next-auth/react";  
-export default function Signout() {  
+export default function SignoutOfKeycloak() {  
   return <button onClick={() => signOut()}>  
     Signout of keycloak  
   </button>  
@@ -353,7 +357,7 @@ export default function SessionGuard({ children }: { children: ReactNode }) {
 // src/app/layout.tsx
 import './globals.css'
 import { Providers } from './Providers'
-import SessionGuard from '@/components/SessionGuard'
+import SessionGuard from '@/app/components/SessionGuard'
 
 // ...
 
@@ -437,13 +441,13 @@ export async function GET(req: NextRequest) {
 }
 ```
 
-Create utils function in `federatedSignout.ts` 
+Create utils function in `federated-signout.ts` 
 
 ```typescript
-// src/app/utils/federatedSignout.ts
+// src/app/utils/federated-signout.ts
 import { signOut } from "next-auth/react";
 
-export default async function federatedSignout() {
+export default async function federated-signout() {
   try {
     const response = await fetch("/api/auth/federated-signout");
     const data = await response.json();
@@ -462,12 +466,12 @@ export default async function federatedSignout() {
 }
 
 ```
-Finally, we replace the `signOut` function provided by `next-auth` with the `federatedSignout` function.
+Finally, we replace the `signOut` function provided by `next-auth` with the `federated-signout` function.
 
 ```typescript
-// src/app/components/Signout.tsx
+// src/app/components/signout-of-keycloak.tsx
 "use client"
-import federatedLogout from "@/utils/federatedSignout";
+import federatedSignout from "@/utils/federated-signout";
 
 export default function Signout() {
   return <button onClick={() => federatedSignout()}>
@@ -488,6 +492,7 @@ In our web application, we might want to keep certain routes accessible when the
 
 Next.js provides middleware, which will run a snippet of code before processing any request. We can define routes that are protected and should be redirected to the sign-in page. Next-auth provides a middleware snippet that can be applied to selected private routes by setting up the path matcher of the route. More details on path matchers can be found [here](https://nextjs.org/docs/app/building-your-application/routing/middleware#matching-paths).
 
+**NOTE**: Starting from Next.js version "13.0.7", the `middleware.ts` file needs to be placed at the same level as the `pages` folder. If the `pages` folder is located in the root directory, add the `middleware.ts` file at the root level. If the `pages` folder is inside the `src` directory, then `middleware.ts` should be added inside the `src` folder.
 
 ### Implementation
 
@@ -506,8 +511,8 @@ export const config = {
 // src/app/public/page.tsx
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import Signout from '@/components/Signout';
-import Signin from '@/components/Signin';
+import SignoutOfKeycloak from '@/app/components/signout-of-keycloak';
+import SigninWithKeycloak from '@/app/components/signin-with-keycloak';
 
 export default async function Public() {
   const session = await getServerSession(authOptions)
@@ -535,7 +540,7 @@ export default async function Public() {
 ```typescript
 // src/app/private/page.tsx
 import { getServerSession } from 'next-auth';
-import Signout from '@/components/Signout';
+import SignoutOfKeycloak from '@/app/components/signout-of-keycloak';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export default async function Private() {
@@ -545,14 +550,122 @@ export default async function Private() {
       <div>You are accessing a private page</div>
       <div>Your name is {session.user?.name}</div>
       <div>
-        <Signout />
+        <SignoutOfKeycloak />
       </div>
     </div>
   }
 }
 ```
 
+- Custom Sign in and Sign out components
+```typescript
+// src/app/auth/signin/page.tsx
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import SignInWithKeycloak from "@/app/components/signin-with-keycloak";
+import { getServerSession } from "next-auth";
+import { redirect, useParams } from "next/navigation";
+
+const signinErrors: Record<string | "default", string> = {
+// ...
+}
+
+interface SignInPageProp {
+  params: object
+  searchParams: {
+    callbackUrl: string
+    error: string
+  }
+}
+
+export default async function Signin({ searchParams: { callbackUrl, error } }: SignInPageProp) {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    redirect(callbackUrl || "/")
+  }
+  return (
+    <div>
+      {error && <div>
+        {signinErrors[error.toLowerCase()]}
+      </div>}
+      <SignInWithKeycloak />
+    </div>
+  )
+}
+```
+
+```typescript
+// src/app/auth/signout/page.tsx
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import SignOutOfKeycloak from "@/app/components/signout-of-keycloak";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+
+export default async function SignoutPage() {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    return (
+      <div>
+        <div>Signout</div>
+        <div>Are you sure you want to sign out?</div>
+        <div>
+          <SignOutOfKeycloak />
+        </div>
+      </div>
+    )
+  }
+  return redirect("/api/auth/signin")
+}
+```
+- Finally, configure `next-auth` to use custom `signin` and `signout` routes. This can be done by configuring the right `authOptions` 
+```typescript
+// src/app/api/auth/[...nextauth]/route.ts
+import { AuthOptions, TokenSet } from "next-auth";
+import NextAuth from "next-auth/next";
+import KeycloakProvider from "next-auth/providers/keycloak"
+
+export const authOptions: AuthOptions = {
+// ...
+  pages: {
+    signIn: '/auth/signin',
+    signOut: '/auth/signout',
+  },
+// ...
+}
+
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST }
+```
+
 ### Demo for securing pages with middleware
+Try to open [http://localhost:3000/private](http://localhost:3000/private), and the access will automatically be redirected to the custom `signin` route.
+
+|![Redirect to custom `signin` route when trying to access **private** resources](./images/2nd-round-demo-1.png)|
+|:-:|
+|Redirect to custom `signin` route when trying to access **private** resources|
+
+The **private** resource is displayed once signed in.
+|![The **private** resource is displayed once signed in](./images/2nd-round-demo-2.png)|
+|:-:|
+|The **private** resource is displayed once signed in|
+
+The custom `signout` page [http://localhost:3000/auth/signout](http://localhost:3000/auth/signout)
+|![The custom **signout** page](./images/2nd-round-demo-3.png)|
+|:-:|
+|The custom **signout** page|
+
+
+Click the `Signout of keycloak` on the custom `signout` page to signout 
+|![Signout from the custom **signout** page](./images/2nd-round-demo-4.png)|
+|:-:|
+|Signout from the custom **signout** page|
+
+
+# Thanks
+If you've reached this point, it means you've at least gone through the entire article once. Hopefully, you've gained some insights about `Next.js`, `next-auth`, `Keycloak`, etc. 
+
+**Happy learning, and happy coding!**
+
 
 # Terminology:
 ## Federated Sign-out
@@ -656,6 +769,8 @@ module.exports = {
 ```
 
 # References:
+[Auth.js - Previously known as Next.js](https://authjs.dev/)
+
 [NextAuth.js Example](https://next-auth-example.vercel.app/)
 
 [Next.js - Routing - Catch call segment](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments)
@@ -667,6 +782,10 @@ module.exports = {
 [Refresh token rotation](https://authjs.dev/guides/basics/refresh-token-rotation)
 
 [Keycloak request form parameters](https://www.keycloak.org/docs/latest/securing_apps/#form-parameters)
+
+[Keycloak core concepts and terms](https://www.keycloak.org/docs/latest/server_admin/index.html#core-concepts-and-terms)
+
+[Next.js - Keycloak - Example](https://next-auth.js.org/providers/keycloak)
 
 [Next.js - Routing - Matching Paths](https://nextjs.org/docs/app/building-your-application/routing/middleware#matching-paths)
 
