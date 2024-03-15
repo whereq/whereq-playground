@@ -30,7 +30,7 @@ success Installed "create-next-app@14.1.3" with binaries:
 ```bash
 cd nextjs-keycloak
 yarn add next-auth
-yarn add  @keycloak/keycloak-admin-client
+yarn add @keycloak/keycloak-admin-client
 ```
 
 ## Implementation
