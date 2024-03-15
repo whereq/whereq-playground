@@ -1,5 +1,14 @@
 # Implementing Authentication in Next.js Application with Keycloak
 
+Basically, both [next-auth](https://next-auth.js.org) and [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) can handle authentication with `Keycloak`. So, why do we need both?
+
+[next-auth](https://next-auth.js.org) is an open-source authentication solution that works with various authentication providers like Google, Facebook, and Keycloak. However, it primarily focuses on **Authentication** OAuth service and supports OAuth 1.0, 1.0A, 2.0, and OpenID Connect. Despite its versatility, it lacks the ability to interact with the extended interfaces of providers, such as retrieving the mapped attributes of Keycloak users.
+
+On the other hand, [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) is a `Keycloak` admin client library that is 100% compatible with `Keycloak` admin RESTful APIs. However, it only works with `Keycloak`.
+
+This project aims to integrate [next-auth](https://next-auth.js.org) and [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) into a single Next.js application. Essentially, [next-auth](https://next-auth.js.org) handles the **authentication** part, while [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) communicates with the `Keycloak` server for tasks beyond **authentication**. However, one challenge is that the `access_token` retrieved by [next-auth](https://next-auth.js.org) cannot be reused by [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client). Consequently, [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) still needs to authenticate against `Keycloak` before accessing its RESTful endpoints. This double **authentication** may seem redundant and not ideal in practice. Nonetheless, this demo serves to illustrate how these two libraries can work with `Keycloak`.
+
+
 ## Create and Init
 ```bash
 yarn create next-app
@@ -17,11 +26,13 @@ success Installed "create-next-app@14.1.3" with binaries:
 √ Would you like to customize the default import alias (@/*)? ... No / Yes
 ```
 
-## Install  [next-auth](https://next-auth.js.org/)  as a dependency 
+## Install  [next-auth](https://next-auth.js.org/) and [KeycloakAdminClient](https://www.npmjs.com/package/@keycloak/keycloak-admin-client) as dependencies
 ```bash
 cd nextjs-keycloak
 yarn add next-auth
+yarn add  @keycloak/keycloak-admin-client
 ```
+
 ## Implementation
 ### 1. Extend the `ProcessEnv` interface with the following steps.
 In the root of the project, create a `types` folder, and then create a file named `node-env.d.ts` within this folder.
