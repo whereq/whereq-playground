@@ -9,7 +9,7 @@ export default async function Private() {
       <div>You are accessing a private page</div>
       <div>Your name is {session.user?.name}</div>
       <div>
-        <signoutOfKeycloak />
+        <SignoutOfKeycloak />
       </div>
     </div>
   }

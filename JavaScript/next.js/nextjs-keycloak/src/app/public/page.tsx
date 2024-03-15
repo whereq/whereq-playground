@@ -10,7 +10,7 @@ export default async function Public() {
       <div>You are accessing a public page</div>
       <div>Your name is {session.user?.name}</div>
       <div>
-        <signoutOfKeycloak />
+        <SignoutOfKeycloak />
       </div>
     </div>
   }
