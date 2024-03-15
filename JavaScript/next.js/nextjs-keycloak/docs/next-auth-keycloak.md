@@ -779,6 +779,27 @@ module.exports = {
 }
 ```
 
+## Error: Invariant: Method expects to have requestAsyncStorage
+### Issue:
+```
+ Error: Invariant: Method expects to have requestAsyncStorage, none available\n    at headers (webpack-internal:///(app-client)/./node_modules/next/dist/client/components/headers.js:36:15)    
+ at getServerSession (webpack-internal:///(app-client)/./node_modules/next-auth/next/index.js:140:35)
+ at fetchSession 
+```
+### Solution:
+The error message indicates that the `getServerSession` method from `next-auth` is expecting to have access to the `requestAsyncStorage`, but it's not available. This could be happening because `getServerSession` is typically used in the server-side context, and it relies on the presence of the `requestAsyncStorage` to access session data.
+
+If you're encountering this error on the client-side, it suggests that you're trying to use `getServerSession` in a client-side context, where access to `requestAsyncStorage` is not available.
+
+To resolve this issue:
+
+1.  Make sure you're using `getServerSession` in a server-side context, such as within an API route or in a server-side rendered (SSR) component.
+    
+2.  If you need to access session data on the client-side, consider using `getSession` instead of `getServerSession`. `getSession` is a client-side function provided by `next-auth` that can be used to fetch session data asynchronously on the client-side.
+
+
+
+
 # References:
 [Auth.js - Previously known as Next.js](https://authjs.dev/)
 
@@ -794,9 +815,15 @@ module.exports = {
 
 [Refresh token rotation](https://authjs.dev/guides/basics/refresh-token-rotation)
 
+[Keycloak Server Admin](https://www.keycloak.org/docs/latest/server_admin/)
+
 [Keycloak request form parameters](https://www.keycloak.org/docs/latest/securing_apps/#form-parameters)
 
 [Keycloak core concepts and terms](https://www.keycloak.org/docs/latest/server_admin/index.html#core-concepts-and-terms)
+
+[Google Authentication OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
+
+[Google Authentication OpenID Connect ObtainUserInfo](https://developers.google.com/identity/openid-connect/openid-connect#obtainuserinfo)
 
 [Next.js - Keycloak - Example](https://next-auth.js.org/providers/keycloak)
 

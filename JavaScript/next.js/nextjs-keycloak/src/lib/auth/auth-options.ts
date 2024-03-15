@@ -1,5 +1,6 @@
-import { AuthOptions, TokenSet } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import { Account, AuthOptions, Profile, TokenSet, User } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
+import { JWT, decode } from "next-auth/jwt";
 import KeycloakProvider from "next-auth/providers/keycloak"
 
 function requestRefreshOfAccessToken(token: JWT) {
@@ -33,13 +34,17 @@ export const authOptions: AuthOptions = {
     maxAge: 60 * 30
   },
   callbacks: {
-    async jwt({ token, account }) {
+
+    async jwt({ token, account, profile}) {
+      console.log(token);
+      console.log(account);
+      console.log(profile);
       if (account) {
-        token.idToken = account.id_token
-        token.accessToken = account.access_token
-        token.refreshToken = account.refresh_token
-        token.expiresAt = account.expires_at
-        return token
+        token.idToken = account.id_token;
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.expiresAt = account.expires_at;
+        return token;
       }
       if (Date.now() < (token.expiresAt! * 1000 - 60 * 1000)) {
         return token

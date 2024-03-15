@@ -11,7 +11,7 @@ export default async function SignoutPage() {
         <div className="text-xl font-bold">Signout</div>
         <div>Are you sure you want to sign out?</div>
         <div>
-          <SignoutOfKeycloak />
+          <signoutOfKeycloak />
         </div>
       </div>
     )
