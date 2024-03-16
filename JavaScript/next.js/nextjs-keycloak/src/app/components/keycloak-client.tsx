@@ -8,9 +8,8 @@ import KeycloakAdminClient from "@keycloak/keycloak-admin-client";
 export default function keycloakClient() {  
 
   const handleButtonClick = async () => {
-    const session = await getSession({}) ?? {} as { accessToken: string }; // Add type assertion for session object
-    console.log('test');
-    console.log(session.accessToken);
+    const session = await getSession()
+    const userEmail = session?.user?.email;
     const kcAdminClient = new KeycloakAdminClient({baseUrl: "http://localhost:8080", realmName: "whereq"});
     await kcAdminClient.auth({
       grantType: "client_credentials",
@@ -18,10 +17,15 @@ export default function keycloakClient() {
       clientSecret: "A9xx9P5lEfvEQaqQUAPAb0Am6qNSV6AA",
     });
 
-    if (session.accessToken) {
-      kcAdminClient.users.find().then((info) => {
-        console.log(info);
-      });
+    if (userEmail) {
+      const userArray = await kcAdminClient.users.find({email: userEmail});
+      if (userArray && userArray.length > 0) {
+        console.log(userArray[0]);
+        console.log(userArray[0].attributes);
+        if (userArray[0].attributes && userArray[0].attributes.avatar && userArray[0].attributes.avatar.length > 0) {
+          console.log(userArray[0].attributes.avatar[0]);
+        }
+      }
     }
   };
 
