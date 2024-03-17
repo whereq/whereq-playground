@@ -689,6 +689,17 @@ If you've reached this point, it means you've at least gone through the entire a
 **Happy learning, and happy coding!**
 
 
+
+--------------------------------------------------------------------------------------------------------------------------
+**If you found this article helpful or enjoyed reading it, why not consider buying me a coffee as a token of appreciation?** :D
+|![Buy Me a Coffee](https://github.com/whereq/whereq-playground/blob/main/buymeacoffee/bmc_qr.png)|
+|:-:|
+|[Buy Me a Coffee](https://www.buymeacoffee.com/whereq)|
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+
 # Terminology:
 ## Federated Sign-out
 Federated sign-out is the situation where a user has used an external identity provider to log into `Keycloak`, and then the user logs out of that external identity provider via a workflow unknown to the application/website. When the user signs out, it will be useful for the application/website to be notified so that it can sign the user out of IdentityServer and all of the applications that use IdentityServer.
