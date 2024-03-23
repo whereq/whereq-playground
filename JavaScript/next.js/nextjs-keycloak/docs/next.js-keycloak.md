@@ -689,14 +689,10 @@ If you've reached this point, it means you've at least gone through the entire a
 **Happy learning, and happy coding!**
 
 
-
---------------------------------------------------------------------------------------------------------------------------
 **If you found this article helpful or enjoyed reading it, why not consider buying me a coffee as a token of appreciation?** :D
 |![Buy Me a Coffee](https://github.com/whereq/whereq-playground/blob/main/buymeacoffee/bmc_qr.png)|
 |:-:|
 |[Buy Me a Coffee](https://www.buymeacoffee.com/whereq)|
-
---------------------------------------------------------------------------------------------------------------------------
 
 
 
