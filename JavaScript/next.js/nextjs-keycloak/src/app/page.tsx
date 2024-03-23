@@ -6,7 +6,7 @@ import KeycloakClient from './components/keycloak-client';
 
 export default async function Home() {  
   const session = await getServerSession(authOptions)  
-  console.log(session);
+  console.log("session", session);
   if (session) {  
     return <div>  
       <div>Your name is {session.user?.name}</div>  

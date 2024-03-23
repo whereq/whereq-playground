@@ -9,16 +9,19 @@ export default function keycloakClient() {
 
   const handleButtonClick = async () => {
     const session = await getSession()
+    const userId = session?.user?.id;
     const userEmail = session?.user?.email;
-    const kcAdminClient = new KeycloakAdminClient({baseUrl: "http://localhost:8080", realmName: "whereq"});
+    // const kcAdminClient = new KeycloakAdminClient({baseUrl: "http://localhost:8080", realmName: "whereq"});
+    const kcAdminClient = new KeycloakAdminClient({baseUrl: "https://keytomarvel.com", realmName: "whereq"});
     await kcAdminClient.auth({
       grantType: "client_credentials",
       clientId: "Vegeta",
-      clientSecret: "A9xx9P5lEfvEQaqQUAPAb0Am6qNSV6AA",
+      // clientSecret: "A9xx9P5lEfvEQaqQUAPAb0Am6qNSV6AA",
+      clientSecret: "7nFInd42hPl1Uz9jkepZpCm7n0OPQVCK",
     });
 
-    if (userEmail) {
-      const userArray = await kcAdminClient.users.find({email: userEmail});
+    if (userId) {
+      const userArray = await kcAdminClient.users.find({id: userId});
       if (userArray && userArray.length > 0) {
         console.log(userArray[0]);
         console.log(userArray[0].attributes);

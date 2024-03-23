@@ -816,6 +816,8 @@ To resolve this issue:
 
 [NextAuth.js Example](https://next-auth-example.vercel.app/)
 
+[NextAuth.js Callbacks](https://next-auth.js.org/configuration/callbacks)
+
 [Next.js - Routing - Catch call segment](https://nextjs.org/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments)
 
 [NextAuth Environment Variables](https://next-auth.js.org/configuration/options#environment-variables)
