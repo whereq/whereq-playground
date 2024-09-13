@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+	<include resource="org/springframework/boot/logging/logback/base.xml" /> 
+	<springProperty scope="" name="PATH" source="logging.path"   defaultValue="." />  
+	<springProperty scope="" name="APP" source="spring.application.name"/>  
+	<springProperty scope="" name="HISTORY" source="logging.maxHistory"   defaultValue="2"/>  
+	<springProperty scope="" name="SIZE" source="logging.maxFileSize"   defaultValue="10MB"/>  
+	<springProperty scope="" name="ERR_HISTORY" source="logging.maxErrHistory"   defaultValue="10"/>  
+	
+	<springProfile name="log">
+		<logger name="org.springframework.web" level="INFO" additivity="false"/>
+		<logger name="com.fedex" level="INFO" />
+
+		<appender name="LOG"
+			class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<!-- -File>${user.home}/logs/${APP_NAME}</File -->
+			<File>${PATH}/${APP}.log</File>
+
+			<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<!-- daily rolling over -->
+				<FileNamePattern>${PATH}/${APP}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+				<!-- keep 2 days' log history . -->
+				<maxHistory>${HISTORY}</maxHistory>
+				<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<maxFileSize>${SIZE}</maxFileSize>
+				</timeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+			<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+				<level>INFO</level>
+			</filter>
+			<encoder>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %X{fdx-req-uuid} [%thread] %-5level %logger{35} - %msg %n
+				</Pattern>
+			</encoder>
+		</appender>
+		<appender name="ERROR_LOG"
+			class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<File>${PATH}/${APP}_error.log</File>
+
+			<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<!-- daily rolling over -->
+				<FileNamePattern>${PATH}/${APP}_error.%d{yyyy-MM-dd}.log</FileNamePattern>
+				<!-- keep 10 days' log history . -->
+				<maxHistory>${ERR_HISTORY}</maxHistory>
+			</rollingPolicy>
+			<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+				<level>ERROR</level>
+			</filter>
+			<encoder>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %X{fdx-req-uuid} [%thread] %-5level %logger{35} - %msg %n
+				</Pattern>
+			</encoder>
+		</appender>
+		<!--TRACE, DEBUG, INFO, WARN, ERROR -->
+		<root level="INFO">
+			<!--appender-ref ref="CONSOLE" /-->
+			<appender-ref ref="LOG" />
+			<appender-ref ref="ERROR_LOG" />
+		</root>
+	</springProfile>
+
+<!-- ###################### cloud settings ###################### -->
+
+	<springProfile name="cloud,local">
+		<!-- <logger name="org.springframework.web" level="INFO" />
+		<logger name="com.springboot.in.action" level="INFO" />
+		<logger name="com.fedex" level="INFO" /> -->
+		<appender name="STDOUT"
+			class="ch.qos.logback.core.ConsoleAppender">
+			<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+				<provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider"/>
+				<!-- Provide the EAI application info. -->
+				<!-- <customFields>{"":""}</customFields> -->
+
+				<fieldNames>
+					<levelValue>[ignore]</levelValue> <!-- remove numeric level -->
+					<logger>logger</logger> <!-- removes the '_name' suffix -->
+					<thread>thread</thread> <!-- removes the '_name' suffix -->
+					<timestamp>timestamp</timestamp> <!-- removes the '@' prefix -->
+					<version>[ignore]</version> <!-- removes the version field -->
+				</fieldNames>
+
+				<!-- Shorten package names to at most 1 character -->
+				<shortenedLoggerNameLength>1</shortenedLoggerNameLength>
+
+				<!-- Set pattern to "2018-09-21T18:10:35.390Z" -->
+				<timestampPattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</timestampPattern>
+				<timeZone>GMT</timeZone>
+
+				<!-- Add a custom exception converter to streamline stack traces -->
+				<throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+					<maxDepthPerThrowable>20</maxDepthPerThrowable>
+					<maxLength>1024</maxLength>
+					<shortenedClassNameLength>20</shortenedClassNameLength>
+					<inlineHash>true</inlineHash> <!-- Creates a unique hash to use in searches -->
+				</throwableConverter>
+        	</encoder>
+		</appender>
+		<root level="INFO" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+<!-- ###################### non-cloud settings ###################### -->
+
+	<springProfile name="noncloud">
+		<!-- <logger name="org.springframework.web" level="INFO" />
+		<logger name="com.springboot.in.action" level="INFO" />
+		<logger name="com.fedex" level="INFO" /> -->
+		<appender name="STDOUT"
+			class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}  %X{fdx-req-uuid} [%thread] %-5level  %logger{35} - %msg %n</Pattern>
+			</encoder>
+		</appender>
+		<root level="INFO" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+</configuration>
