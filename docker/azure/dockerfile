@@ -1,0 +1,50 @@
+## Docker image for Python
+
+## Components installed
+## - Azure functions core tools v4
+## - Python 3.12
+## - NodeJS 18
+
+FROM ubuntu:20.04
+ 
+LABEL maintainer=whereq@gmail.com
+
+#ENV http_proxy http://proxy:port
+#ENV https_proxy http://proxy:port
+
+RUN apt-get update && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg
+
+RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.gpg
+
+RUN AZ_REPO=$(lsb_release -cs) && \
+	echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/dotnetdev.list
+ 
+
+#install azure-functions-core-tools-4
+RUN apt-get update && apt-get install -y azure-functions-core-tools-4
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
+## Install Python 3.12
+RUN apt-get update && \
+	apt install software-properties-common -y && \
+	add-apt-repository ppa:deadsnakes/ppa  && \
+	apt install python3.12 -y && \
+	apt-get clean
+
+
+## install nodejs 20
+RUN apt-get update && \
+	apt install -y curl && \
+	curl -fsSL https://deb.nodesource.com/setup_20.x | bash -  && \
+	apt-get install -y nodejs && \
+	apt-get clean
+
+## install pip/create link for python 3.12
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
+    ln -s /usr/bin/python3.12 /usr/bin/python
+
+RUN mkdir -p /app
+
+## Remove proxy
+# ENV http_proxy="" https_proxy=""

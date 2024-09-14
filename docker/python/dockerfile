@@ -1,0 +1,44 @@
+## Docker image for Python
+
+## Components installed
+## - Python 3.12
+
+FROM ubuntu:20.04
+ 
+LABEL maintainer=whereq@gmail.com
+
+#ENV http_proxy http://proxy:port
+#ENV https_proxy http://proxy:port
+
+RUN apt-get update && apt-get install -y ca-certificates curl wget apt-transport-https lsb-release gnupg
+
+## Install Python 3.12
+RUN apt-get update && \
+	apt install software-properties-common -y && \
+	add-apt-repository ppa:deadsnakes/ppa  && \
+	apt install python3.12 -y && \
+	apt-get clean
+
+
+## install pip/create link for python 3.12
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 && \
+    ln -s /usr/bin/python3.12 /usr/bin/python
+
+## install Anaconda
+RUN set -x && \
+	wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh -O anaconda.sh -q && \
+    echo "6c8a4abb36fbb711dc055b7049a23bbfd61d356de9468b41c5140f8a11abd851 anaconda.sh" > shasum && \
+    sha256sum --check --status shasum && \
+	/bin/bash anaconda.sh -b -p /opt/conda && \
+    rm anaconda.sh shasum && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc && \
+    find /opt/conda/ -follow -type f -name '*.a' -delete && \
+    find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
+    /opt/conda/bin/conda clean -afy
+	
+RUN mkdir -p /app
+
+## Remove proxy
+# ENV http_proxy="" https_proxy=""
