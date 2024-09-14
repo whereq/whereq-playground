@@ -1,0 +1,80 @@
+[
+    {
+        "description": "edits",
+        "schema": {
+        	"type": "object",
+        	"properties": {
+        		"a": {
+        			"type": "number"
+        		},
+        		"b": {
+        			"type": "number"
+        		},
+        		"c": {
+        			"type": "number",
+        			"edits": [
+        				{
+        					"primeCondition": "a*b>15",
+        					"crossCondition": {
+        						"enum": [3,5]
+        					}
+        				}
+        			]
+        		},
+        		"d": {
+        			"type": "array",
+        			"items": {
+        				"type": "number",
+        				"crossEdits": [
+			        		{
+			        			"primeCondition": "a+b>10",
+			        			"crossCondition": "d[]>5",
+			        			"errorCode": "31233"
+			        		}
+        				]
+        			}
+        		}
+        	},
+        	"edits": [
+        		{
+        			"primeCondition": "a+b>10",
+        			"crossCondition": {
+        				"required": ["bar"]
+        			}
+        		}
+        	]
+        },
+        "tests": [
+            {
+                "description": "missing property will not perform edit",
+                "data": {"a": 4, "b": 5, "d":[6]},
+                "valid": true
+            },
+            {
+                "description": "violate crossEdit",
+                "data": {"a": 7, "b": 5, "d":[3]},
+                "valid": false
+            },
+            {
+                "description": "edit cross condition met",
+                "data": {"a": 4, "b": 5, "c": 3},
+                "valid": true
+            },
+            {
+                "description": "edit cross condition met",
+                "data": {"a": 6, "b": 5, "c": 3, "bar": true},
+                "valid": true
+            },
+            {
+                "description": "edit cross condition not met",
+                "data": {"a": 6, "b": 5, "c": 4},
+                "valid": false
+            },
+            {
+                "description": "edit cross condition not met",
+                "data": {"a": 6, "b": 5, "c": 3},
+                "valid": false
+            }
+        ]
+    }
+]

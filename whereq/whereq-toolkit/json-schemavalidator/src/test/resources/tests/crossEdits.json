@@ -1,0 +1,102 @@
+[
+    {
+        "description": "crossEdits",
+        "schema": {
+            "crossEdits": [
+                {
+                    "primeCondition": "a+b>10",
+                    "crossCondition": "b+c<15",
+                    "errorCode": "15000"
+                }
+            ]
+        },
+        "tests": [
+            {
+                "description": "primeCondition not met, crossCondition will not be checked",
+                "data": {"a": 5, "b": 2, "c":20},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition met",
+                "data": {"a": 5, "b": 7, "c":2},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition not met",
+                "data": {"a": 5, "b": 7, "c":20},
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "crossEdits with context",
+        "schema": {
+            "crossEdits": [
+                {
+                    "primeCondition": "a+b>10",
+                    "crossCondition": "b+c<#d",
+                    "errorCode": "15000"
+                }
+            ]
+        },
+        "tests": [
+            {
+                "description": "primeCondition met, crossCondition met",
+                "data": {"a": 5, "b": 7, "c":2},
+                "context": {"d": 15},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition not met",
+                "data": {"a": 5, "b": 7, "c":20},
+                "context": {"d": 15},
+                "valid": false
+            },
+            {
+                "description": "primeCondition met, crossCondition met",
+                "data": {"a": 5, "b": 7, "c":20},
+                "context": {"d": 35},
+                "valid": true
+            }
+        ]
+    },
+    {
+        "description": "crossEdits 2",
+        "schema": {
+            "crossEdits": [
+                {
+                    "primeCondition": ["a+b",">10"],
+                    "crossCondition": "b+c<15",
+                    "errorCode": "15000"
+                },
+                {
+                    "primeCondition": "b+c<15",
+                    "crossCondition": ["a+c", "<", "15"],
+                    "errorCode": "15001"
+                }
+            ]
+        },
+        "tests": [
+            {
+                "description": "primeCondition not met, crossCondition will not be checked",
+                "data": {"a": 5, "b": 2, "c":20},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition met",
+                "data": {"a": 5, "b": 7, "c":2},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition met",
+                "data": {"a": 5, "b": 7, "c":6},
+                "valid": true
+            },
+            {
+                "description": "primeCondition met, crossCondition not met",
+                "data": {"a": 10, "b": 7, "c":6},
+                "valid": false
+            }
+        ]
+    }
+]

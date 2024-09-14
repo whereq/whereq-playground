@@ -1,0 +1,59 @@
+[
+    {
+        "description": "edits",
+        "schema": {
+        	"type": "object",
+        	"properties": {
+        		"a": {
+        			"type": "number"
+        		},
+        		"b": {
+        			"type": "number"
+        		},
+        		"c": {
+        			"type": "number"
+        		}
+        	},
+        	"edits": [
+        		{
+        			"primeCondition": "a+b>10",
+        			"crossCondition": {
+        				"readOnly": ["c"]
+        			}
+        		}
+        	]
+        },
+        "tests": [
+            {
+                "description": "prime condition not met, \"c\" can be changed",
+                "data": {"a": 4, "b": 5, "c": 6},
+                "context": {
+                	"original" : {
+                		"c": 10
+                	}
+                },
+                "valid": true
+            },
+            {
+                "description": "prime condition met, not valid because \"c\" has been changed",
+                "data": {"a": 6, "b": 5, "c": 6},
+                "context": {
+                	"original" : {
+                		"c": 10
+                	}
+                },
+                "valid": false
+            },
+            {
+                "description": "prime condition met, valid because \"c\" has not been changed",
+                "data": {"a": 6, "b": 5, "c": 10},
+                "context": {
+                	"original" : {
+                		"c": 10
+                	}
+                },
+                "valid": true
+            }
+        ]
+    }
+]

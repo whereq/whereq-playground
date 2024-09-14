@@ -1,0 +1,95 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Version: v1.  Date:20181219. Full schema with all of the scenarios",
+    "type": "object",
+    "properties": {
+		"person": {
+			"description": "The person object",
+            "type": "object",
+            "properties": {
+	            "firstName": {
+					"description": "First name",
+					"type": "string"
+				},
+				"lastName": {
+					"description": "Last name",
+					"type": "string"
+				},
+				"address": {
+					"description": "Version 1, Date; 20180425. Address",
+				    "type": "object",
+				    "$ref": "#/definitions/address"
+				}
+            },
+            "dependencies": {
+				"firstName": ["lastName"],
+				"lastName": ["firstName"]
+			},
+            "additionalProperties": false
+		},
+		"additionalProperties": false
+	},
+	"definitions": {
+        "address": {
+            "description": "Version 1, Date; 20180425. Address Def",
+            "type": "object",
+            "properties": {
+                "street_address": {
+                	"type": "string"                	
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "postcode": {
+                    "type": "string"
+                },
+                "location": {
+                	"type": "object",
+					"$ref": "#/definitions/coordinate"
+                },
+                "boundary": {
+					"description": "boundary of this address if there is.",
+					"type": "object",
+					"properties": {
+						"coordinates": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/coordinate"							
+							}
+		                }
+					},
+					"additionalProperties": false
+                }              
+            },
+			"additionalProperties": false,
+            "required": [
+                "street_address", "city"
+            ]
+        },
+        "coordinate": {
+        	"description": "Version 1, Date; 20180425. Coordinate Def",
+            "type": "object",
+            "properties": {
+            	"latitude": {
+                	"type": "any",
+                	"javaType": "java.math.Double"
+                },
+                "longitude": {
+                	"type": "any",
+                	"javaType": "java.math.Double"
+                }                
+            },
+            "dependencies": {
+				"latitude": ["longitude"],
+				"longitude": ["latitude"]
+			},
+			"additionalProperties": false
+        }
+    },
+    "required": [
+        "address"
+    ]
+}

@@ -1,0 +1,44 @@
+[
+    {
+        "description": "edits",
+        "schema": {
+        	"type": "object",
+        	"properties": {
+        		"a": {
+        			"type": "number"
+        		},
+        		"b": {
+        			"type": "number"
+        		},
+        		"c": {
+        			"type": "number"
+        		}
+        	},
+        	"edits": [
+        		{
+        			"primeCondition": "a+b>10",
+        			"crossCondition": {
+        				"notAllowed": ["c"]
+        			}
+        		}
+        	]
+        },
+        "tests": [
+            {
+                "description": "prime condition not met, \"c\" is allowed",
+                "data": {"a": 4, "b": 5, "c": 6},
+                "valid": true
+            },
+            {
+                "description": "prime condition met, not valid because \"c\" appears in the data",
+                "data": {"a": 6, "b": 5, "c": 6},
+                "valid": false
+            },
+            {
+                "description": "prime condition met, valid because \"c\" does not appear in the data",
+                "data": {"a": 6, "b": 5},
+                "valid": true
+            }
+        ]
+    }
+]

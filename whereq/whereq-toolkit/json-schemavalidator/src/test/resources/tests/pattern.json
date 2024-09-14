@@ -1,0 +1,49 @@
+[
+    {
+        "description": "pattern validation",
+        "schema": {"pattern": "^a*$"},
+        "tests": [
+            {
+                "description": "a matching pattern is valid",
+                "data": "aaa",
+                "valid": true
+            },
+            {
+                "description": "a non-matching pattern is invalid",
+                "data": "abc",
+                "valid": false
+            },
+            {
+                "description": "ignores non-strings",
+                "data": true,
+                "valid": true
+            }
+        ]
+    },
+    {
+        "description": "pattern validation for numbers",
+        "schema": {"pattern": "^[0-9]{2,5}$"},
+        "tests": [
+            {
+                "description": "a matching pattern is valid",
+                "data": 11,
+                "valid": true
+            },
+            {
+                "description": "a non-matching pattern is invalid",
+                "data": 1,
+                "valid": false
+            },
+            {
+                "description": "a non-matching pattern is invalid",
+                "data": 111111,
+                "valid": false
+            },
+            {
+                "description": "ignores non-strings and non-numbers",
+                "data": true,
+                "valid": true
+            }
+        ]
+    }
+]

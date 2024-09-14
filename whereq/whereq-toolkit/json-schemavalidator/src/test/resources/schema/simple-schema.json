@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Version: v1.  Date:20181219. Full schema with all of the scenarios",
+    "type": "object",
+    "properties": {
+		"person": {
+			"description": "The person object",
+            "type": "object",
+            "properties": {
+	            "firstName": {
+					"description": "First name",
+					"type": "string"
+				},
+				"lastName": {
+					"description": "Last name",
+					"type": "string"
+				}
+            },
+            "dependencies": {
+				"firstName": ["lastName"],
+				"lastName": ["firstName"]
+			},
+            "additionalProperties": false
+		},
+		"additionalProperties": false
+	}
+}

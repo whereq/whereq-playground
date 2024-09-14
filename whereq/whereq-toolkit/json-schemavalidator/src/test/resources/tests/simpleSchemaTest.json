@@ -1,0 +1,6 @@
+{
+    "person": {
+		"description": "The invalid case for dependencies testing. firstName depends on lastName and vice versa",
+        "firstName": "Foo"
+    }
+}

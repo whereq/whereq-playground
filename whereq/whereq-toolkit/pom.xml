@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.whereq.toolkit</groupId>
+	<artifactId>whereq-toolkit</artifactId>
+	<version>0.1</version>
+	<name>WhereQToolkit</name>
+	<packaging>pom</packaging>
+	
+	
+	<properties>
+		<maven.test.skip>false</maven.test.skip>
+	
+		<java.version>1.8</java.version>
+		<whereq_code.version>0.1</whereq_code.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<jackson.version>2.8.9</jackson.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<version.servlet>3.0.1</version.servlet>
+		<jose4j.version>0.5.5</jose4j.version>
+		<antlr.version>4.3</antlr.version>
+		<common-lang.version>2.6</common-lang.version>
+		<commons-lang3.version>3.4</commons-lang3.version>
+		<commons-io.version>2.4</commons-io.version>
+		<commons-codec.version>1.10</commons-codec.version>
+		<commons-text.version>1.5</commons-text.version>
+		<commons-logging.version>1.0.4</commons-logging.version>
+		<encoder.version>1.2.1</encoder.version>
+		<metrics.version>3.2.3</metrics.version>
+		<logback.version>1.2.3</logback.version>
+		<junit.version>4.12</junit.version>
+		<mockito.version>2.0.44-beta</mockito.version>
+		<hamcrest.version>1.3</hamcrest.version>
+		<jetty.version>7.1.6.v20100715</jetty.version>
+		<undertow.version>1.0.19.Final</undertow.version>
+		<jsonpath.version>2.1.0</jsonpath.version>
+		<httpclient.version>4.5.3</httpclient.version>
+		<httpasyncclient.version>4.1.1</httpasyncclient.version>
+		<xalan.version>2.7.2</xalan.version>
+		<sts-client-api.version>1.1.1</sts-client-api.version>
+		<sts-client-common-utils.version>1.1.1</sts-client-common-utils.version>
+		<sts-client-pf-kerberos-token-translator.version>2.0.1</sts-client-pf-kerberos-token-translator.version>
+		<sts-client-open-token-translator.version>2.5.6</sts-client-open-token-translator.version>
+		<com.springsource.org.apache.commons.collections.version>3.2.2</com.springsource.org.apache.commons.collections.version>
+		<commons-beanutils.version>1.9.3</commons-beanutils.version>
+ 		<opensaml.version>3.1.1</opensaml.version>
+ 		<java-support.version>7.1.1</java-support.version>
+		<guava.version>25.0-android</guava.version>
+		
+		<spring.version>4.1.8.RELEASE</spring.version>
+		
+		<orika.version>1.4.6</orika.version>
+		<jackson.version>2.9.5</jackson.version>
+		<assertj.version>2.2.0</assertj.version>
+		<powermock.version>1.6.3</powermock.version>
+
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		
+		<argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
+	</properties>
+
+	<modules>
+		<module>utils</module>
+		<module>mappers</module>
+		<module>json-schemavalidator</module>
+	</modules>
+	
+	<!--
+	<distributionManagement>
+		<repository>
+			<id>WhereQNexus</id>
+			<name>Internal Releases</name>
+			<url>${nexus.server}/nexus/content/repositories/WhereQ-Java-Releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>SnapShotNexus</id>
+			<name>Internal Snapshots</name>
+			<url>${nexus.server}/nexus/content/repositories/WhereQ-Java-Snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	-->
+	<build>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<filtering>false</filtering>
+				<directory>${basedir}/src/test/resources</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</testResource>
+		</testResources>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.14</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>2.14</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+
+			<!-- JACOCO added for code coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.4.201502262128</version>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- end JACOCO -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-jar-plugin</artifactId>
+		        <configuration>
+        			<archive>
+        				<manifest>
+        					<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+        					<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+        				</manifest>
+        			</archive>
+        		</configuration>
+        	</plugin>
+
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.14</version>
+			</plugin>
+		</plugins>
+	</reporting>	
+</project>
