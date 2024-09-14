@@ -1,0 +1,15 @@
+Cities
+<table id="tbl_cities" *ngIf="cities">
+    <tr>
+        <th>country</th>
+        <th>name</th>
+        <th>lat</th>
+        <th>lng</th>
+    </tr>
+    <tr *ngFor="let city of cities; let i = index">
+        <td id = "td_{{i}}">{{city.country}}</td>
+        <td>{{city.name}}</td>
+        <td>{{city.lat}}</td>
+        <td>{{city.lng}}</td>
+    </tr>
+</table>

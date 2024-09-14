@@ -1,0 +1,11 @@
+Countries
+<table id="tbl_countries" *ngIf="countries">
+    <tr>
+        <th>name</th>
+        <th>code</th>
+    </tr>
+    <tr *ngFor="let country of countries; let i = index">
+        <td id = "td_{{i}}">{{country.name}}</td>
+        <td>{{country.code}}</td>
+    </tr>
+</table>
