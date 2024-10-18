@@ -35,7 +35,7 @@ const arrowFunction = (): void => {
      }
      ```
 
-   - If there is only one parameter, parentheses can be omitted:
+   - In JavaScript if there is only one parameter, parentheses can be omitted, but in TypeScript, because we're using a type annotation (name: string), the parentheses are required to specify the type, even though there is only one parameter.
      ```typescript
      const greet = (name: string): string => `Hello, ${name}`;
      ```
