@@ -268,8 +268,8 @@ You can customize the `argparse` help output by adjusting the description, `epil
 
 ```python
 parser = argparse.ArgumentParser(
-    description="A sample CLI tool",
-    epilog="Thank you for using the tool!",
+    description="WhereQ Python CLI",
+    epilog="Thank you for using the WhereQ Python CLI!",
     usage="%(prog)s [options]"
 )
 ```
@@ -283,8 +283,8 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(
-        description="A comprehensive Python CLI tool example",
-        epilog="Thank you for using the tool!"
+        description="WhereQ Python CLI",
+        epilog="Thank you for using the WhereQ Python CLI!"
     )
 
     # Positional argument
