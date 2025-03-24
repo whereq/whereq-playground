@@ -24,7 +24,52 @@ In this article, we will explore some of the most common AI models used for gene
 3. **Variational**: Adds randomness (a probability distribution) to the latent space, allowing the model to generate new data.
 
 ### Example Diagram:
-![VAE Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Autoencoder_structure.png/220px-Autoencoder_structure.png)
+![VAE Diagram](img/VAE.webp)
+
+```
++-------------------+
+|    Input Data     |
+|        x          |
++-------------------+
+         |
+         v
++-------------------+
+|    Encoder        |
+| (Neural Network)  |
+|                   |
+|  Outputs:         |
+|  - μ (Mean)       |
+|  - log σ² (Log    |
+|    Variance)      |
++-------------------+
+         |
+         v
++-------------------+
+| Reparameterization|
+| Trick:            |
+| z = μ + σ * ε     |
+| (ε ~ N(0, I))     |
++-------------------+
+         |
+         v
++-------------------+
+|    Decoder        |
+| (Neural Network)  |
+|                   |
+|  Outputs:         |
+|  - Reconstructed  |
+|    Data x'        |
++-------------------+
+         |
+         v
++-------------------+
+|    Loss Function  |
+|                   |
+|  - Reconstruction |
+|    Loss           |
+|  - KL Divergence  |
++-------------------+
+```
 
 ### Python Code Example:
 ```python
@@ -70,7 +115,48 @@ vae = tf.keras.Model(input_img, output_img)
 3. **Adversarial Training**: The two networks compete, helping the generator improve.
 
 ### Example Diagram:
-![GAN Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Generative_adversarial_networks.png/300px-Generative_adversarial_networks.png)
+![GAN Diagram](img/gan.svg)
+
+```
++-------------------+
+|   Random Noise    |
+|        z          |
++-------------------+
+         |
+         v
++-------------------+
+|    Generator      |
+| (Neural Network)  |
+|                   |
+|  Outputs:         |
+|  - Generated Data |
+|    G(z)           |
++-------------------+
+         |
+         v
++-------------------+
+|    Discriminator  |
+| (Neural Network)  |
+|                   |
+|  Inputs:          |
+|  - Real Data x    |
+|  - Generated Data |
+|    G(z)           |
+|                   |
+|  Outputs:         |
+|  - Probability    |
+|    Score (0 to 1) |
++-------------------+
+         |
+         v
++-------------------+
+|    Loss Function  |
+|                   |
+|  - Generator Loss |
+|  - Discriminator  |
+|    Loss           |
++-------------------+
+```
 
 ### Python Code Example:
 ```python
@@ -121,7 +207,44 @@ gan = tf.keras.Model(gan_input, validity)
 - Often used in natural language processing (NLP) and time series data.
 
 ### Example Diagram (Transformer):
-![Transformer](https://jalammar.github.io/images/t/transformer_self_attention_2.png)
+![Transformer](img/Development-of-autoregressive-models-based-on-Transformer-architecture-1-basic-model.png)
+
+```
++-------------------+
+|   Input Sequence  |
+|        x          |
++-------------------+
+         |
+         v
++-------------------+
+|   Positional      |
+|   Encoding        |
++-------------------+
+         |
+         v
++-------------------+
+|   Transformer     |
+|   Encoder         |
+|                   |
+|  - Multi-Head     |
+|    Attention      |
+|  - Feed-Forward   |
+|    Layers         |
++-------------------+
+         |
+         v
++-------------------+
+|   Output Layer    |
+|                   |
+|  - Softmax        |
++-------------------+
+         |
+         v
++-------------------+
+|   Predicted Token |
+|        y          |
++-------------------+
+```
 
 ### Python Code Example (Using AR):
 ```python
@@ -156,7 +279,31 @@ model.fit(X, y, epochs=10)
 - They are invertible, meaning the process can be reversed easily.
 
 ### Example Diagram:
-![Flow Diagram](https://miro.medium.com/max/1400/1*i7AAn5tpGIwxDW8XzzfJvA.png)
+![Flow Diagram](img/The-flow-based-generative-models.png)
+
+```
++-------------------+
+|   Simple          |
+|   Distribution    |
+|        z          |
++-------------------+
+         |
+         v
++-------------------+
+|   Flow Model      |
+|                   |
+|  - Coupling Layers|
+|  - Invertible     |
+|    Transformations|
++-------------------+
+         |
+         v
++-------------------+
+|   Complex         |
+|   Distribution    |
+|        x          |
++-------------------+
+```
 
 ### Python Code Example:
 ```python
@@ -188,7 +335,46 @@ print(samples)
 2. The model learns to reverse this process, removing the noise and recovering the original data.
 
 ### Example Diagram:
-![Diffusion Models](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/diffusion-process.png)
+![Diffusion Models](Diffusion-Models.png)
+
+```
++-------------------+
+|   Real Data       |
+|        x          |
++-------------------+
+         |
+         v
++-------------------+
+|   Forward         |
+|   Diffusion       |
+|   Process         |
+|                   |
+|  - Add Noise      |
+|  - Gaussian Noise |
++-------------------+
+         |
+         v
++-------------------+
+|   Noisy Data      |
+|        x_t        |
++-------------------+
+         |
+         v
++-------------------+
+|   Reverse         |
+|   Diffusion       |
+|   Process         |
+|                   |
+|  - Denoise        |
+|  - Neural Network |
++-------------------+
+         |
+         v
++-------------------+
+|   Generated Data  |
+|        x_0        |
++-------------------+
+```
 
 ### Python Code Example:
 ```python

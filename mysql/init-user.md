@@ -1,8 +1,0 @@
- ```
- CREATE DATABASE whereq;
- CREATE USER 'user'@'localhost' IDENTIFIED BY 'user123';
- CREATE USER 'user'@'%' IDENTIFIED BY 'user123';
-
- GRANT ALL PRIVILEGES ON whereq.* TO 'user'@'%' WITH GRANT OPTION;
- FLUSH PRIVILEGES;
- ```
